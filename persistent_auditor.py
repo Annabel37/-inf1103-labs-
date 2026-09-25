@@ -29,12 +29,12 @@ def load_inventory():
     return total, history
 
 
-# def save_inventory(total, history):
-#     os.makedirs(DATA_DIR, exist_ok=True)
-#     with open(INVENTORY_FILE, "w") as file:
-#         file.write(str(total) + "\n")
-#         file.write(",".join(str(value) for value in history) + "\n")
-#     print("Inventory successfully saved to", INVENTORY_FILE)
+def save_inventory(total, history):
+     os.makedirs(DATA_DIR, exist_ok=True)
+     with open(INVENTORY_FILE, "w") as file:
+         file.write(str(total) + "\n")
+         file.write(",".join(str(value) for value in history) + "\n")
+     print("Inventory successfully saved to", INVENTORY_FILE)
 
 
 def get_valid_input():
@@ -86,7 +86,7 @@ while True:
     stock = get_valid_input()
 
     if stock == "quit":
-        # save_inventory(inventory, history)
+        save_inventory(inventory, history)
         generate_report(inventory, fail_attempt)
         print("Total of deliveries processed:", deliveries_processed)
         print("Transaction History:", history)
