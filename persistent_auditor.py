@@ -5,6 +5,9 @@ import os
 DATA_DIR = os.environ.get("DATA_DIR", ".")
 INVENTORY_FILE = os.path.join(DATA_DIR, "inventory.txt")
 
+# The program stops when the inventory is more than this limit.
+MAX_INVENTORY = 500
+
 
 def load_inventory():
     # File format:
@@ -30,11 +33,11 @@ def load_inventory():
 
 
 def save_inventory(total, history):
-     os.makedirs(DATA_DIR, exist_ok=True)
-     with open(INVENTORY_FILE, "w") as file:
-         file.write(str(total) + "\n")
-         file.write(",".join(str(value) for value in history) + "\n")
-     print("Inventory successfully saved to", INVENTORY_FILE)
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(INVENTORY_FILE, "w") as file:
+        file.write(str(total) + "\n")
+        file.write(",".join(str(value) for value in history) + "\n")
+    print("Inventory successfully saved to", INVENTORY_FILE)
 
 
 def get_valid_input():
@@ -106,3 +109,12 @@ while True:
 
     print("Inventory:", inventory)
     print("Tax for this delivery:", tax)
+
+    # Stop the program when the inventory is more than the limit
+    if inventory > MAX_INVENTORY:
+        print("Inventory is more than " + str(MAX_INVENTORY) + ". The program stops now.")
+        save_inventory(inventory, history)
+        generate_report(inventory, fail_attempt)
+        print("Total of deliveries processed:", deliveries_processed)
+        print("Transaction History:", history)
+        break
