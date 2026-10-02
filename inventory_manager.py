@@ -1,6 +1,6 @@
 # Inventory Management System (INF1103 Lab 5)
 # Each product is a dictionary. All products are kept in one list.
-# The list is read from inventory.json when the program starts.
+# The list is saved in inventory.json, so the data stays after the program closes.
 
 import json
 import os
@@ -73,6 +73,12 @@ def load_inventory():
     return inventory
 
 
+def save_inventory(inventory):
+    """Write the full product list to inventory.json."""
+    with open(FILE_NAME, "w") as file:
+        json.dump(inventory, file, indent=4)
+
+
 # ---------- Menu functions ----------
 
 def display_all(inventory):
@@ -92,7 +98,7 @@ def add_product(inventory):
     print("Add New Product")
     product_id = input_text("Product ID: ").upper()
     if find_product(inventory, product_id) is not None:
-        print(f"{product_id} already exists.")
+        print(f"{product_id} already exists. Use option 3 to update its stock.")
         return
 
     name = input_text("Product Name: ")
@@ -111,14 +117,59 @@ def add_product(inventory):
     print("Product added successfully!")
 
 
+def update_stock(inventory):
+    """Set a new stock quantity. Keep the change in the history list."""
+    print("Update Stock")
+    product_id = input("Enter Product ID: ").strip().upper()
+    product = find_product(inventory, product_id)
+    if product is None:
+        print("Product not found.")
+        return
+
+    print("Product Found:")
+    print(f"Name: {product['name']}")
+    print(f"Current Stock: {product['stock']}")
+    new_stock = get_quantity("New Stock Quantity: ")
+
+    change = new_stock - product["stock"]   # transaction amount, for example +10 or -5
+    if change == 0:
+        print("The stock is the same. No change made.")
+        return
+
+    product["stock"] = new_stock            # running total
+    product["history"].append(change)       # every transaction amount
+    print("Stock updated successfully!")
+
+
+def search_product(inventory):
+    """Find one product by its ID and show its details."""
+    print("Search Product")
+    product_id = input("Enter Product ID: ").strip().upper()
+    product = find_product(inventory, product_id)
+    if product is None:
+        print("Product not found.")
+        return
+
+    print("Product Found")
+    print(LINE)
+    print(f"ID: {product['id']}")
+    print(f"Name: {product['name']}")
+    print(f"Price: ${product['price']:.2f}")
+    print(f"Stock: {product['stock']}")
+    print(f"History: {product['history']}")
+    print(LINE)
+
+
 # ---------- Main program ----------
 
 def show_menu():
-    # Options 3, 4 and 5 come in the next commit.
     print()
     print("----------- MENU -----------")
     print("1. Display All Products")
     print("2. Add Product")
+    print("3. Update Stock")
+    print("4. Search Product")
+    print("5. Save Inventory")
     print("6. Exit")
     print("----------------------------")
 
@@ -138,12 +189,23 @@ def main():
             display_all(inventory)
         elif choice == "2":
             add_product(inventory)
+        elif choice == "3":
+            update_stock(inventory)
+        elif choice == "4":
+            search_product(inventory)
+        elif choice == "5":
+            print("Saving inventory...")
+            save_inventory(inventory)
+            print(f"Inventory saved successfully to {FILE_NAME}.")
         elif choice == "6":
+            print("Saving inventory before exit...")
+            save_inventory(inventory)
+            print("Inventory saved successfully.")
             print("Thank you for using Inventory Management System.")
             print("Program terminated.")
             break
         else:
-            print("Invalid option. Enter 1, 2 or 6.")
+            print("Invalid option. Enter a number from 1 to 6.")
 
 
 main()
