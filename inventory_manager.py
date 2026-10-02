@@ -1,12 +1,17 @@
 # Inventory Management System (INF1103 Lab 5)
 # Each product is a dictionary. All products are kept in one list.
+# The list is read from inventory.json when the program starts.
 
+import json
+import os
+
+FILE_NAME = "inventory.json"
 LINE = "-" * 48
 
 
 # ---------- Input helpers ----------
 
-def get_text(prompt):
+def input_text(prompt):
     """Ask again until the user types some text."""
     while True:
         text = input(prompt).strip()
@@ -15,7 +20,7 @@ def get_text(prompt):
         print("This field cannot be empty.")
 
 
-def get_price(prompt):
+def input_price(prompt):
     """Ask again until the user types a price of 0 or more."""
     while True:
         try:
@@ -47,6 +52,27 @@ def find_product(inventory, product_id):
     return None
 
 
+# ---------- File functions ----------
+
+def load_inventory():
+    """Load inventory.json if it exists. If not, start with an empty list."""
+    if not os.path.exists(FILE_NAME):
+        print(f"{FILE_NAME} not found.")
+        print("Starting with an empty inventory.")
+        return []
+
+    print(f"{FILE_NAME} found.")
+    try:
+        with open(FILE_NAME, "r") as file:
+            inventory = json.load(file)
+    except json.JSONDecodeError:
+        print(f"{FILE_NAME} is damaged. Starting with an empty inventory.")
+        return []
+
+    print("Inventory loaded successfully.")
+    return inventory
+
+
 # ---------- Menu functions ----------
 
 def display_all(inventory):
@@ -64,13 +90,13 @@ def display_all(inventory):
 def add_product(inventory):
     """Ask for a new product and add it to the list."""
     print("Add New Product")
-    product_id = get_text("Product ID: ").upper()
+    product_id = input_text("Product ID: ").upper()
     if find_product(inventory, product_id) is not None:
         print(f"{product_id} already exists.")
         return
 
-    name = get_text("Product Name: ")
-    price = get_price("Price: ")
+    name = input_text("Product Name: ")
+    price = input_price("Price: ")
     stock = get_quantity("Stock Quantity: ")
 
     # The start stock is the first transaction in the history.
@@ -88,7 +114,7 @@ def add_product(inventory):
 # ---------- Main program ----------
 
 def show_menu():
-    # Options 3, 4 and 5 come in the next commits.
+    # Options 3, 4 and 5 come in the next commit.
     print()
     print("----------- MENU -----------")
     print("1. Display All Products")
@@ -102,12 +128,7 @@ def main():
     print("INVENTORY MANAGEMENT SYSTEM")
     print("=" * 40)
 
-    # Start with 3 products. Each product is a dictionary in the list.
-    inventory = [
-        {"id": "P001", "name": "Laptop", "price": 1200.00, "stock": 15, "history": [15]},
-        {"id": "P002", "name": "Mouse", "price": 25.50, "stock": 40, "history": [40]},
-        {"id": "P003", "name": "Keyboard", "price": 45.00, "stock": 25, "history": [25]},
-    ]
+    inventory = load_inventory()
 
     while True:
         show_menu()
