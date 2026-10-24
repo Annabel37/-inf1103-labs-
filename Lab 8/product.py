@@ -1,0 +1,62 @@
+# Product class (INF1103 Lab 6)
+# Responsibility: represent and manage ONE product.
+
+class Product:
+    def __init__(self, product_id, name, price, stock, history=None):
+        if price < 0:
+            raise ValueError("The price cannot be less than 0.")
+        if stock < 0:
+            raise ValueError("The stock cannot be less than 0.")
+
+        self.__product_id = product_id
+        self.__name = name
+        self.__price = round(price, 2)
+        self.__stock = stock
+        # The start stock is the first transaction in the history.
+        if history is None:
+            self.__history = [stock]
+        else:
+            self.__history = list(history)
+
+    # ---------- Getters (read only access) ----------
+
+    def get_product_id(self):
+        return self.__product_id
+
+    def get_name(self):
+        return self.__name
+
+    def get_price(self):
+        return self.__price
+
+    def get_stock(self):
+        return self.__stock
+
+    def get_history(self):
+        return list(self.__history)   # a copy, so outside code cannot change it
+
+    # ---------- Methods ----------
+
+    def update_stock(self, quantity):
+        """Set a new stock quantity. Return the change (for example +10 or -5)."""
+        if quantity < 0:
+            raise ValueError("The stock cannot be less than 0.")
+
+        change = quantity - self.__stock
+        if change != 0:
+            self.__stock = quantity
+            self.__history.append(change)
+        return change
+
+    def display_information(self):
+        """Show all details of this product."""
+        print(f"ID: {self.__product_id}")
+        print(f"Name: {self.__name}")
+        print(f"Price: ${self.__price:.2f}")
+        print(f"Stock: {self.__stock}")
+        print(f"History: {self.__history}")
+
+    def display_summary(self):
+        """Show this product on one line."""
+        print(f"ID: {self.__product_id} | Name: {self.__name} | "
+              f"Price: ${self.__price:.2f} | Stock: {self.__stock}")
