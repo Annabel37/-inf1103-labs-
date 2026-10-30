@@ -70,7 +70,10 @@ class Product(ABC):
               f"Price: ${self.__price:.2f} | Stock: {self.__stock}")
    
         
-
+class CanBeShipped(ABC):
+    @abstractmethod
+    def calculate_shipping_cost(self):
+        return
 
 
 class PhysicalProduct(Product):
@@ -88,6 +91,10 @@ class PhysicalProduct(Product):
     def get_fulfilment_info(self):
         return f"The Product required physical shipping"
 
+    def calculate_shipping_cost(self):
+        # $2 shipping fee + $1.50 for each kg
+        return round(2 + self.__weight * 1.50, 2)
+
 
 class DigitalProduct(Product):
     def __init__(self, product_id, name, price, stock, download_size, history=None):
@@ -104,6 +111,10 @@ class DigitalProduct(Product):
     def get_fulfilment_info(self):
         return f"the product is delivered digitally"
 
+
+
+
+
     
 
 
@@ -115,3 +126,10 @@ class DigitalProduct(Product):
 # d.display_information()
 # print(p.get_fulfilment_info())
 # print(d.get_fulfilment_info())
+
+# light = PhysicalProduct("P001", "mouse", 20, 10, 0.2)
+# medium = PhysicalProduct("P002", "keyboard", 50, 5, 1.5)
+# heavy = PhysicalProduct("P003", "monitor", 200, 3, 6)
+
+# for item in [light, medium, heavy]:
+#     print(f"{item.get_name()} ({item.get_weight()} kg): ${item.calculate_shipping_cost():.2f}")
