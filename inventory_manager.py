@@ -5,7 +5,7 @@
 import json
 import os
 
-FILE_NAME = "inventory.json"
+FILE_NAME = os.path.join(os.path.dirname(os.path.abspath(__file__))),
 LINE = "-" * 48
 
 

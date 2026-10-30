@@ -2,7 +2,7 @@
 # Main program responsibility: show the menu, get user input,
 # and call the correct Inventory methods.
 
-from product import Product
+from product import PhysicalProduct, DigitalProduct
 from file_handler import load_inventory, save_inventory, FILE_NAME
 
 LINE = "-" * 48
@@ -43,6 +43,30 @@ def input_quantity(prompt):
             print("Type a whole number, for example 10.")
 
 
+def input_size(prompt):
+    """Ask again until the user types a number of more than 0 (weight or download size)."""
+    while True:
+        try:
+            value = float(input(prompt))
+            if value > 0:
+                return value
+            print("The value must be more than 0.")
+        except ValueError:
+            print("Type a number, for example 1.5.")
+
+
+def input_product_type():
+    """Ask again until the user types 1 (physical) or 2 (digital)."""
+    while True:
+        print("Product Type:")
+        print("1. Physical Product")
+        print("2. Digital Product")
+        choice = input("Enter type: ").strip()
+        if choice in ("1", "2"):
+            return choice
+        print("Invalid type. Enter 1 or 2.")
+
+
 # ---------- Menu actions ----------
 
 def add_product(inventory):
@@ -52,11 +76,19 @@ def add_product(inventory):
         print(f"{product_id} already exists. Use option 3 to update its stock.")
         return
 
+    product_type = input_product_type()
     name = input_text("Product Name: ")
     price = input_price("Price: ")
     stock = input_quantity("Stock Quantity: ")
 
-    product = Product(product_id, name, price, stock)
+    # Ask for the extra value that this product type needs.
+    if product_type == "1":
+        weight = input_size("Weight (kg): ")
+        product = PhysicalProduct(product_id, name, price, stock, weight)
+    else:
+        download_size = input_size("Download Size (MB): ")
+        product = DigitalProduct(product_id, name, price, stock, download_size)
+
     inventory.add_product(product)
     print("Product added successfully!")
 
@@ -92,6 +124,7 @@ def search_product(inventory):
     print("Product Found")
     print(LINE)
     product.display_information()
+    print(f"Fulfilment: {product.get_fulfilment_info()}")
     print(LINE)
 
 

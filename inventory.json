@@ -1,21 +1,35 @@
 [
     {
         "id": "P001",
-        "name": "Laptop",
-        "price": 1200.0,
-        "stock": 18,
+        "name": "mouse",
+        "price": 3.0,
+        "stock": 40,
         "history": [
-            15,
-            3
-        ]
+            40
+        ],
+        "type": "digital",
+        "download_size": 300.0
+    },
+    {
+        "id": "P003",
+        "name": "Mouse",
+        "price": 3.0,
+        "stock": 200,
+        "history": [
+            200
+        ],
+        "type": "physical",
+        "weight": 1.0
     },
     {
         "id": "P002",
-        "name": "Mouse",
-        "price": 14.0,
-        "stock": 300,
+        "name": "SD Card",
+        "price": 50.0,
+        "stock": 3,
         "history": [
-            300
-        ]
+            3
+        ],
+        "type": "digital",
+        "download_size": 1000.0
     }
 ]
