@@ -1,7 +1,8 @@
 # Product class (INF1103 Lab 6)
 # Responsibility: represent and manage ONE product.
+from abc import ABC, abstractmethod
 
-class Product:
+class Product(ABC):
     def __init__(self, product_id, name, price, stock, history=None):
         if price < 0:
             raise ValueError("The price cannot be less than 0.")
@@ -33,6 +34,10 @@ class Product:
     def get_stock(self):
         return self.__stock
 
+    @abstractmethod
+    def get_fulfilment_info():
+        pass
+
     
 
     def get_history(self):
@@ -63,6 +68,8 @@ class Product:
         """Show this product on one line."""
         print(f"ID: {self.__product_id} | Name: {self.__name} | "
               f"Price: ${self.__price:.2f} | Stock: {self.__stock}")
+   
+        
 
 
 
@@ -78,6 +85,9 @@ class PhysicalProduct(Product):
         super().display_information()          # show existing Product info
         print(f"Weight: {self.__weight} kg")   # add the new info
 
+    def get_fulfilment_info(self):
+        return f"The Product required physical shipping"
+
 
 class DigitalProduct(Product):
     def __init__(self, product_id, name, price, stock, download_size, history=None):
@@ -91,6 +101,11 @@ class DigitalProduct(Product):
         super().display_information()
         print(f"Download size: {self.__download_size} MB")
 
+    def get_fulfilment_info(self):
+        return f"the product is delivered digitally"
+
+    
+
 
 # p = PhysicalProduct("P001", "mouse", 1, 2, 1)
 # d = DigitalProduct("D001", "ebook", 5, 100, 25)
@@ -98,3 +113,5 @@ class DigitalProduct(Product):
 # p.display_information()
 # print()
 # d.display_information()
+# print(p.get_fulfilment_info())
+# print(d.get_fulfilment_info())
