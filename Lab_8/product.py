@@ -12,6 +12,7 @@ class Product:
         self.__name = name
         self.__price = round(price, 2)
         self.__stock = stock
+        
         # The start stock is the first transaction in the history.
         if history is None:
             self.__history = [stock]
@@ -31,6 +32,8 @@ class Product:
 
     def get_stock(self):
         return self.__stock
+
+    
 
     def get_history(self):
         return list(self.__history)   # a copy, so outside code cannot change it
@@ -60,3 +63,38 @@ class Product:
         """Show this product on one line."""
         print(f"ID: {self.__product_id} | Name: {self.__name} | "
               f"Price: ${self.__price:.2f} | Stock: {self.__stock}")
+
+
+
+class PhysicalProduct(Product):
+    def __init__(self, product_id, name, price, stock, weight, history=None):
+        super().__init__(product_id, name, price, stock, history)   # reuse Product constructor
+        self.__weight = weight                                       # new attribute
+
+    def get_weight(self):
+        return self.__weight
+
+    def display_information(self):
+        super().display_information()          # show existing Product info
+        print(f"Weight: {self.__weight} kg")   # add the new info
+
+
+class DigitalProduct(Product):
+    def __init__(self, product_id, name, price, stock, download_size, history=None):
+        super().__init__(product_id, name, price, stock, history)
+        self.__download_size = download_size
+
+    def get_download_size(self):
+        return self.__download_size
+
+    def display_information(self):
+        super().display_information()
+        print(f"Download size: {self.__download_size} MB")
+
+
+# p = PhysicalProduct("P001", "mouse", 1, 2, 1)
+# d = DigitalProduct("D001", "ebook", 5, 100, 25)
+
+# p.display_information()
+# print()
+# d.display_information()
