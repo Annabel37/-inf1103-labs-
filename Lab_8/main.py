@@ -2,7 +2,9 @@
 # Main program responsibility: show the menu, get user input,
 # and call the correct Inventory methods.
 
-from product import PhysicalProduct, DigitalProduct
+#from product import PhysicalProduct, DigitalProduct
+from physicalproduct import PhysicalProduct
+from digitalproduct import DigitalProduct
 from file_handler import load_inventory, save_inventory, FILE_NAME
 
 LINE = "-" * 48

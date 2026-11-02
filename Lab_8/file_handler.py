@@ -5,11 +5,14 @@
 import json
 import os
 
-from product import PhysicalProduct, DigitalProduct
+#from product import PhysicalProduct, DigitalProduct
 from inventory import Inventory
+from physicalproduct import PhysicalProduct
+from digitalproduct import DigitalProduct
 
+
+#FILE_NAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inventory.json")
 FILE_NAME = "inventory.json"
-
 
 def create_product(item):
     """Make the correct product object from one saved record.

@@ -31,5 +31,16 @@
         ],
         "type": "digital",
         "download_size": 1000.0
+    },
+    {
+        "id": "1001",
+        "name": "speaker",
+        "price": 50.0,
+        "stock": 4,
+        "history": [
+            4
+        ],
+        "type": "physical",
+        "weight": 5.0
     }
 ]

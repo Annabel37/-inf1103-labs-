@@ -2,6 +2,7 @@
 # Responsibility: represent and manage ONE product.
 from abc import ABC, abstractmethod
 
+
 class Product(ABC):
     def __init__(self, product_id, name, price, stock, history=None):
         if price < 0:
@@ -66,59 +67,12 @@ class Product(ABC):
 
     def display_summary(self):
         """Show this product on one line."""
-        print(f"ID: {self.__product_id} | Name: {self.__name} | "
-              f"Price: ${self.__price:.2f} | Stock: {self.__stock}")
+        # print(f"ID: {self.__product_id} | Name: {self.__name} | "
+        #       f"Price: ${self.__price:.2f} | Stock: {self.__stock}")
+        print(f"{self.get_product_id():<8} {self.get_name():<20} ${self.get_price():>8.2f} {self.get_stock():>5}")
    
         
-class CanBeShipped(ABC):
-    @abstractmethod
-    def calculate_shipping_cost(self):
-        return
 
-
-class PhysicalProduct(Product, CanBeShipped):
-    def __init__(self, product_id, name, price, stock, weight, history=None):
-        super().__init__(product_id, name, price, stock, history)   # reuse Product constructor
-        self.__weight = weight                                       # new attribute
-
-    def get_weight(self):
-        return self.__weight
-
-    def display_information(self):
-        super().display_information()          # show existing Product info
-        print(f"Weight: {self.__weight} kg")   # add the new info
-
-    def get_fulfilment_info(self):
-        return f"The Product required physical shipping"
-
-    def calculate_shipping_cost(self):
-        # $2 shipping fee + $1.50 for each kg
-        return round(2 + self.__weight * 1.50, 2)
-
-    def display_summary(self):
-        super().display_summary()
-        return f"The Product required physical shipping"
-       
-
-
-class DigitalProduct(Product):
-    def __init__(self, product_id, name, price, stock, download_size, history=None):
-        super().__init__(product_id, name, price, stock, history)
-        self.__download_size = download_size
-
-    def get_download_size(self):
-        return self.__download_size
-
-    def display_information(self):
-        super().display_information()
-        print(f"Download size: {self.__download_size} MB")
-
-    def display_summary(self):
-        super().display_summary()
-        return f"The Product delivered digitally"
-
-    def get_fulfilment_info(self):
-        return f"the product is delivered digitally"
 
    
 
