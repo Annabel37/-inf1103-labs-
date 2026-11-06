@@ -1,75 +1,69 @@
 # Product class (INF1103 Lab 6)
 # Responsibility: represent and manage ONE product.
 from abc import ABC, abstractmethod
-
+from supplier import Supplier
 
 class Product(ABC):
-    def __init__(self, product_id, name, price, stock, history=None):
+    def __init__(self, product_id: str, name: str, price: float, stock: int, supplier: Supplier, history: list[int] = None):
         if price < 0:
             raise ValueError("The price cannot be less than 0.")
         if stock < 0:
             raise ValueError("The stock cannot be less than 0.")
 
-        self.__product_id = product_id
-        self.__name = name
-        self.__price = round(price, 2)
-        self.__stock = stock
+        self.__product_id: str = product_id
+        self.__name: str = name
+        self.__price: float = round(price, 2)
+        self.__stock: int = stock
+        self.supplier: Supplier = supplier
         
-        # The start stock is the first transaction in the history.
         if history is None:
-            self.__history = [stock]
+            self.__history: list[int] = [stock]
         else:
             self.__history = list(history)
 
-    # ---------- Getters (read only access) ----------
-
-    def get_product_id(self):
+    def get_product_id(self) -> str:
         return self.__product_id
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__name
 
-    def get_price(self):
+    def get_price(self) -> float:
         return self.__price
 
-    def get_stock(self):
+    def get_stock(self) -> int:
         return self.__stock
 
     @abstractmethod
-    def get_fulfilment_info():
+    def get_fulfilment_info(self) -> str:
         pass
 
-    
+    def get_history(self) -> list[int]:
+        return list(self.__history)
 
-    def get_history(self):
-        return list(self.__history)   # a copy, so outside code cannot change it
-
-    # ---------- Methods ----------
-
-    def update_stock(self, quantity):
-        """Set a new stock quantity. Return the change (for example +10 or -5)."""
+    def update_stock(self, quantity: int) -> int:
         if quantity < 0:
             raise ValueError("The stock cannot be less than 0.")
-
         change = quantity - self.__stock
         if change != 0:
             self.__stock = quantity
             self.__history.append(change)
         return change
 
-    def display_information(self):
-        """Show all details of this product."""
+    def display_information(self) -> None:
         print(f"ID: {self.__product_id}")
         print(f"Name: {self.__name}")
         print(f"Price: ${self.__price:.2f}")
         print(f"Stock: {self.__stock}")
         print(f"History: {self.__history}")
+        if self.supplier:
+            print("Supplier Details:")
+            self.supplier.display_information()
 
-    def display_summary(self):
-        """Show this product on one line."""
-        # print(f"ID: {self.__product_id} | Name: {self.__name} | "
-        #       f"Price: ${self.__price:.2f} | Stock: {self.__stock}")
+    def display_summary(self) -> None:
         print(f"{self.get_product_id():<8} {self.get_name():<20} ${self.get_price():>8.2f} {self.get_stock():>5}")
+
+    
+
    
         
 
@@ -98,3 +92,4 @@ class Product(ABC):
 
 # for item in [light, medium, heavy]:
 #     print(f"{item.get_name()} ({item.get_weight()} kg): ${item.calculate_shipping_cost():.2f}")
+

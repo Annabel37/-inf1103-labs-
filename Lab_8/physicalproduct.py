@@ -1,29 +1,26 @@
 
 from product import Product 
 from canbeshipped import CanBeShipped
-
-
+from supplier import Supplier
 
 class PhysicalProduct(Product, CanBeShipped):
-    def __init__(self, product_id, name, price, stock, weight, history=None):
-        super().__init__(product_id, name, price, stock, history)   # reuse Product constructor
-        self.__weight = weight                                       # new attribute
+    def __init__(self, product_id: str, name: str, price: float, stock: int, weight: float, supplier: Supplier, history: list[int] = None):
+        super().__init__(product_id, name, price, stock, supplier, history)
+        self.__weight: float = weight
 
-    def get_weight(self):
+    def get_weight(self) -> float:
         return self.__weight
 
-    def display_information(self):
-        super().display_information()          # show existing Product info
-        print(f"Weight: {self.__weight} kg")   # add the new info
+    def display_information(self) -> None:
+        super().display_information()
+        print(f"Weight: {self.__weight} kg")
 
-    def get_fulfilment_info(self):
-        return f"The Product required physical shipping"
+    def get_fulfilment_info(self) -> str:
+        return "The Product requires physical shipping"
 
-    def calculate_shipping_cost(self):
-        # $2 shipping fee + $1.50 for each kg
+    def calculate_shipping_cost(self) -> float:
         return round(2 + self.__weight * 1.50, 2)
 
-    def display_summary(self):
+    def display_summary(self) -> None:
         super().display_summary()
-        return f"The Product required physical shipping"
-       # print("  The product requires physical shipping")
+        print("  -> Requires physical shipping")
