@@ -31,5 +31,16 @@
         ],
         "type": "physical",
         "weight": 1.0
+    },
+    {
+        "id": "1004",
+        "name": "camera",
+        "price": 300.0,
+        "stock": 4,
+        "history": [
+            4
+        ],
+        "type": "physical",
+        "weight": 2.0
     }
 ]
