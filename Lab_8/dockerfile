@@ -10,5 +10,6 @@ COPY main.py ./main.py
 
 # New line: put a copy of the current data in the image
 COPY inventory.json .
+COPY . .
 
 CMD ["python", "main.py"]
