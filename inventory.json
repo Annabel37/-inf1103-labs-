@@ -42,5 +42,16 @@
         ],
         "type": "physical",
         "weight": 5.0
+    },
+    {
+        "id": "P004",
+        "name": "keyboard",
+        "price": 12.0,
+        "stock": 1,
+        "history": [
+            1
+        ],
+        "type": "physical",
+        "weight": 0.5
     }
 ]

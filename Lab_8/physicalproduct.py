@@ -12,6 +12,7 @@ class PhysicalProduct(Product, CanBeShipped):
         return self.__weight
 
     def display_information(self) -> None:
+        #cdisplay information from the product parent 
         super().display_information()
         print(f"Weight: {self.__weight} kg")
 

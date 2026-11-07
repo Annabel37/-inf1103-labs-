@@ -4,6 +4,7 @@ from orderline import OrderLine
 class Order:
     def __init__(self, order_id: str, order_lines: list[OrderLine] = None):
         self.order_id: str = order_id
+        #it is a arregation for the orderline as when orderline is missing, the order will still able to run
         self.order_lines: list[OrderLine] = order_lines if order_lines is not None else []
 
     def add_order_line(self, product: Product, quantity: int) -> None:

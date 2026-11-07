@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from supplier import Supplier
 
 class Product(ABC):
+     
     def __init__(self, product_id: str, name: str, price: float, stock: int, supplier: Supplier, history: list[int] = None):
         if price < 0:
             raise ValueError("The price cannot be less than 0.")
@@ -14,6 +15,7 @@ class Product(ABC):
         self.__name: str = name
         self.__price: float = round(price, 2)
         self.__stock: int = stock
+        #creating a arregation with the supplier class
         self.supplier: Supplier = supplier
         
         if history is None:
