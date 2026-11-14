@@ -53,5 +53,16 @@
         ],
         "type": "physical",
         "weight": 0.5
+    },
+    {
+        "id": "P005",
+        "name": "thumbdrive",
+        "price": 15.0,
+        "stock": 3,
+        "history": [
+            3
+        ],
+        "type": "physical",
+        "weight": 55.0
     }
 ]

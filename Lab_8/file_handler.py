@@ -1,81 +1,144 @@
-
-# Responsibility: load and save inventory.json.
-import os
+# Responsibility: load and save inventory.json and products.csv.
+import csv
 import json
-from physicalproduct import PhysicalProduct
+import os
 from digitalproduct import DigitalProduct
 from inventory import Inventory
+from physicalproduct import PhysicalProduct
+from ProductFactory import ProductFactory
+
 
 class FileHandler:
-    
-    def __init__(self, file_name: str = "inventory.json"):
-        # Saves the filename as an instance variable (matched to self.file_name)
-        self.file_name = file_name
 
-    def create_product(self, item):
-        """Make the correct product object from one saved record.
-        Return None if the type is missing or unknown."""
+  def __init__(self, file_name: str = "inventory.json"):
+    self.file_name = file_name
+
+  def load_inventory(self):
+    """Load inventory from json file into an Inventory object."""
+    inventory = Inventory()
+
+    if not os.path.exists(self.file_name):
+      print(f"{self.file_name} not found.")
+      print("Starting with an empty inventory.")
+      return inventory
+
+    print(f"{self.file_name} found.")
+    try:
+      with open(self.file_name, "r") as file:
+        data = json.load(file)
+      for item in data:
+        # Recreating products from json storage
         product_type = item.get("type")
-
         if product_type == "physical":
-            return PhysicalProduct(
-                item["id"], item["name"], item["price"],
-                item["stock"], item["weight"], item.get("history")
-            )
-        if product_type == "digital":
-            return DigitalProduct(
-                item["id"], item["name"], item["price"],
-                item["stock"], item["download_size"], item.get("history")
-            )
-        return None
+          product = ProductFactory.create(
+              product_type,
+              item["id"],
+              item["name"],
+              item["price"],
+              item["stock"],
+              None,  # Adjust supplier if stored in your JSON
+              weight=item.get("weight", 1.0),
+          )
+        elif product_type == "digital":
+          product = ProductFactory.create(
+              product_type,
+              item["id"],
+              item["name"],
+              item["price"],
+              item["stock"],
+              None,
+              download_size=item.get("download_size", 10.0),
+          )
+        else:
+          print(
+              f"Skipped {item.get('id', '?')}: the product type is missing or"
+              " unknown."
+          )
+          continue
+        inventory.add_product(product)
+    except (json.JSONDecodeError, KeyError, ValueError, TypeError):
+      print(f"{self.file_name} is damaged. Starting with an empty inventory.")
+      return Inventory()
 
-    def load_inventory(self):
-        """Load inventory from file into an Inventory object."""
-        inventory = Inventory()
+    print("Inventory loaded successfully.")
+    return inventory
 
-        if not os.path.exists(self.file_name):
-            print(f"{self.file_name} not found.")
-            print("Starting with an empty inventory.")
-            return inventory
+  def save_inventory(self, inventory):
+    """Write all products to json file."""
+    data = []
+    for product in inventory.get_products():
+      record = {
+          "id": product.get_product_id(),
+          "name": product.get_name(),
+          "price": product.get_price(),
+          "stock": product.get_stock(),
+          "history": product.get_history(),
+      }
 
-        print(f"{self.file_name} found.")
-        try:
-            with open(self.file_name, "r") as file:
-                data = json.load(file)
-            for item in data:
-                product = self.create_product(item)
-                if product is None:
-                    print(f"Skipped {item.get('id', '?')}: the product type is missing or unknown.")
-                    continue
-                inventory.add_product(product)
-        except (json.JSONDecodeError, KeyError, ValueError, TypeError):
-            print(f"{self.file_name} is damaged. Starting with an empty inventory.")
-            return Inventory()
+      if isinstance(product, PhysicalProduct):
+        record["type"] = "physical"
+        record["weight"] = product.get_weight()
+      elif isinstance(product, DigitalProduct):
+        record["type"] = "digital"
+        record["download_size"] = product.get_download_size()
 
-        print("Inventory loaded successfully.")
-        return inventory
+      data.append(record)
 
-    def save_inventory(self, inventory):
-        """Write all products to file, with the type and the extra value."""
-        data = []
-        for product in inventory.get_products():
-            record = {
-                "id": product.get_product_id(),
-                "name": product.get_name(),
-                "price": product.get_price(),
-                "stock": product.get_stock(),
-                "history": product.get_history(),
-            }
+    with open(self.file_name, "w") as file:
+      json.dump(data, file, indent=4)
 
-            # Save the type and the extra value, so that load can make the correct class.
-            if isinstance(product, PhysicalProduct):
-                record["type"] = "physical"
-                record["weight"] = product.get_weight()
-            elif isinstance(product, DigitalProduct):
-                record["type"] = "digital"
-                record["download_size"] = product.get_download_size()
+  def load_products(self, path: str, inventory, supplier) -> None:
+    """Loads products from a CSV file using try/except/else/finally."""
+    loaded = 0
+    try:
+      file = open(path, newline="")
+    except FileNotFoundError:
+      print(f"Products file not found: {path}")
+    else:
+      with file:
+        reader = csv.reader(file)
+        next(reader, None)  # Skip the header row
 
-            data.append(record)
+        for row_index, row in enumerate(reader, start=2):
+          if not row:
+            continue
+          try:
+            product_type, product_id, name, price_str, stock_str = [
+                col.strip() for col in row
+            ]
+            price = float(price_str)
+            stock_quantity = int(stock_str)
 
-        with open(self.file_name, "w") as file:
-            json.dump(data, file, indent=4)
+            # Create product via your factory[cite: 8]
+            if product_type == "physical":
+              product = ProductFactory.create(
+                  product_type,
+                  product_id,
+                  name,
+                  price,
+                  stock_quantity,
+                  supplier,
+                  weight=1.0,
+              )
+            elif product_type == "digital":
+              product = ProductFactory.create(
+                  product_type,
+                  product_id,
+                  name,
+                  price,
+                  stock_quantity,
+                  supplier,
+                  download_size=10.0,
+              )
+            else:
+              raise ValueError(f"Unknown product type: {product_type}")
+
+            inventory.add_product(product)
+            loaded += 1
+          except ValueError as e:
+            print(f"Skipping row {row_index} due to error: {e}")
+
+        print(f"{loaded} products loaded.")
+    finally:
+      print("Load attempt finished.")
+

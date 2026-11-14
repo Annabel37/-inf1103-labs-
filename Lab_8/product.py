@@ -6,10 +6,10 @@ from supplier import Supplier
 class Product(ABC):
      
     def __init__(self, product_id: str, name: str, price: float, stock: int, supplier: Supplier, history: list[int] = None):
-        if price < 0:
-            raise ValueError("The price cannot be less than 0.")
+        if price <= 0:
+            raise ValueError("Product price must be greater then 0.")
         if stock < 0:
-            raise ValueError("The stock cannot be less than 0.")
+            raise ValueError("The stock quantity cannot be negative.")
 
         self.__product_id: str = product_id
         self.__name: str = name
