@@ -22,3 +22,6 @@ class Order:
             line for line in self.order_lines
             if line.product.get_product_id() != product_id
         ]
+
+    
+    
